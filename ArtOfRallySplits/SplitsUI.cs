@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
+using HarmonyLib;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 using UnityModManagerNet;
 using Color = UnityEngine.Color;
 
@@ -7,25 +12,25 @@ namespace ArtOfRallySplits
 {
     public static class SplitsUI
     {
-        private const float DisplayTime = 2;
-
-        private const float FadeTime = 0.5f;
-
         private static float _lastTimestamp;
 
-        private static readonly GUIStyle TimeStyle = new GUIStyle
+        public static readonly GUIStyle TimeStyle = new GUIStyle(GUI.skin.box)
         {
-            fontStyle = FontStyle.Bold,
-            alignment = TextAnchor.LowerCenter,
+            alignment = TextAnchor.MiddleCenter,
+            normal =
+            {
+                background = Texture2D.whiteTexture
+            }
         };
 
-        private static readonly GUIStyle DeltaStyle = new GUIStyle
+        public static readonly GUIStyle DeltaStyle = new GUIStyle(GUI.skin.box)
         {
-            fontStyle = FontStyle.Bold,
-            alignment = TextAnchor.UpperCenter,
+            alignment = TextAnchor.MiddleCenter,
+            normal =
+            {
+                background = Texture2D.whiteTexture
+            }
         };
-
-        private static readonly GUIStyleState Normal = new GUIStyleState();
 
         public static void ResetFade()
         {
@@ -34,15 +39,14 @@ namespace ArtOfRallySplits
 
         public static void Draw(UnityModManager.ModEntry modEntry)
         {
+            if (GameEntryPoint.EventManager.status != EventStatusEnums.EventStatus.UNDERWAY &&
+                GameEntryPoint.EventManager.status != EventStatusEnums.EventStatus.WAITING_TO_BEGIN) return;
+
             var time = Time.time - _lastTimestamp;
-            var fade = Mathf.Clamp(time > FadeTime
-                    ? 1f - (time + FadeTime - DisplayTime) / FadeTime
-                    : time / FadeTime, 0, 1
+            var fade = Mathf.Clamp(time > Main.Settings.FadeTime
+                    ? 1f - (time + Main.Settings.FadeTime - Main.Settings.DisplayTime) / Main.Settings.FadeTime
+                    : time / Main.Settings.FadeTime, 0, 1
             );
-            if (Main.Settings.AlwaysShowSplit)
-            {
-                fade = 1;
-            }
 
             if (Main.Settings.ShowCurrentWaypoint)
             {
@@ -57,29 +61,80 @@ namespace ArtOfRallySplits
 
             var difference = SplitsState.PlayerTime - SplitsState.GhostTime;
             var sign = Math.Sign(difference) != -1 ? "+" : "-";
-            var background = Main.Settings.BackgroundColor;
+            var color = Math.Sign(difference) != -1 ? Main.Settings.BehindColor : Main.Settings.AheadColor;
 
-            var timeText = $"{TimeFormatter.GetCachedFormattedTime(SplitsState.PlayerTime)}";
-            var deltaText =          $"{sign}{TimeFormatter.GetCachedFormattedTime(Mathf.Abs(difference))}";
+            if (Main.Settings.ShowDelta)
+            {
+                GUI.color = new Color(1f, 1f, 1f, Main.Settings.AlwaysShowDelta ? 1f : fade);
+                GUI.backgroundColor = Main.Settings.BackgroundColor;
 
-            GUI.color = new Color(1f, 1f, 1f, fade);
-            Normal.textColor = Math.Sign(difference) != -1 ? Main.Settings.BehindColor : Main.Settings.AheadColor;
-            TimeStyle.normal = Normal;
-            TimeStyle.fontSize = Main.Settings.TimeFontSize;
-            DeltaStyle.normal = Normal;
-            DeltaStyle.fontSize = Main.Settings.DeltaFontSize;
+                DeltaStyle.normal.textColor = color;
+                DeltaStyle.fontSize = Main.Settings.DeltaFontSize;
+                DeltaStyle.fontStyle = Main.Settings.DeltaFontStyle;
+                GUI.Box(
+                    Anchor(Main.Settings.DeltaAnchor, new Rect(
+                        Main.Settings.DeltaPosition.x,
+                        Main.Settings.DeltaPosition.y,
+                        Main.Settings.DeltaSize.x,
+                        Main.Settings.DeltaSize.y
+                    )),
+                    $"{sign}{TimeFormatter.GetCachedFormattedTime(Mathf.Abs(difference))}",
+                    DeltaStyle
+                );
+            }
 
-            var rect = new Rect(
-                Screen.width * Main.Settings.BackgroundX - Main.Settings.BackgroundWidth / 2f,
-                Screen.height * Main.Settings.BackgroundY - Main.Settings.BackgroundHeight / 2f,
-                Main.Settings.BackgroundWidth,
-                Main.Settings.BackgroundHeight);
+            if (Main.Settings.ShowSplitTime && SplitsState.PlayerTimes != null)
+            {
+                GUI.color = new Color(1f, 1f, 1f, Main.Settings.AlwaysShowTime ? 1f : fade);
+                GUI.backgroundColor = Main.Settings.BackgroundColor;
 
-            GUI.Box(rect, Texture2D.grayTexture);
-            GUI.Label(new Rect(rect.x, rect.y + Main.Settings.TimeOffsetY, rect.width, rect.height), timeText,
-                TimeStyle);
-            GUI.Label(new Rect(rect.x, rect.y + Main.Settings.DeltaOffsetY, rect.width, rect.height), deltaText,
-                DeltaStyle);
+                TimeStyle.normal.textColor = Color.white;
+                TimeStyle.fontSize = Main.Settings.TimeFontSize;
+                TimeStyle.fontStyle = Main.Settings.TimeFontStyle;
+                GUI.Box(
+                    Anchor(Main.Settings.TimeAnchor, new Rect(
+                        Main.Settings.TimePosition.x,
+                        Main.Settings.TimePosition.y,
+                        Main.Settings.TimeSize.x,
+                        Main.Settings.TimeSize.y
+                    )),
+                    string.Join("\n",
+                        SplitsState.PlayerTimes.Select(it =>
+                            it < 0 ? "--:--:---" : TimeFormatter.GetCachedFormattedTime(it))
+                    ),
+                    TimeStyle
+                );
+            }
+        }
+
+        private static Rect Anchor(TextAnchor anchor, Rect position)
+        {
+            return anchor switch
+            {
+                TextAnchor.MiddleCenter => new Rect(
+                    Screen.width / 2f - position.width / 2f + position.x,
+                    Screen.height / 2f - position.height / 2f - position.y,
+                    position.width,
+                    position.height
+                ),
+                TextAnchor.UpperRight => new Rect(
+                    Screen.width - position.width - position.x,
+                    position.y,
+                    position.width,
+                    position.height
+                ),
+                _ => throw new ArgumentOutOfRangeException(nameof(anchor), anchor, "Unsupported anchor")
+            };
+        }
+    }
+
+    [HarmonyPatch(typeof(StageTimerManager), "Update")]
+    public static class StageTimeDisplay
+    {
+        public static void Postfix(Text ___TimeDisplay)
+        {
+            SplitsUI.DeltaStyle.font = ___TimeDisplay.font;
+            SplitsUI.TimeStyle.font = ___TimeDisplay.font;
         }
     }
 }

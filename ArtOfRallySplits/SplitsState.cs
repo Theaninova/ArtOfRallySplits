@@ -15,6 +15,8 @@ namespace ArtOfRallySplits
 
         [CanBeNull] public static float[] GhostTimes;
 
+        [CanBeNull] public static float[] PlayerTimes;
+
         [CanBeNull] public static Vector3[] Waypoints;
     }
 }

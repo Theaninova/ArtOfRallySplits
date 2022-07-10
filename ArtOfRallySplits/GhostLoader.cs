@@ -13,9 +13,17 @@ namespace ArtOfRallySplits
     public class GhostLoader
     {
         public static int Counter = 0;
+
+        public static bool Initialized;
+
+        public static void Prefix(bool ____createdGhost)
+        {
+            Initialized = ____createdGhost;
+        }
         
         public static void Postfix(GhostManager __instance, GhostManager.GhostData ____currentData)
         {
+            if (Initialized) return;
             Main.Logger.Log($"Attempting to load ghost ({Counter}, {__instance.GetHashCode()})");
             Counter++;
             if (SplitsState.SplitsConfig == null || SplitsState.Waypoints == null || ____currentData == null) return;
