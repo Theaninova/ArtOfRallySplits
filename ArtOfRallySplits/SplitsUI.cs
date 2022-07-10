@@ -120,6 +120,7 @@ namespace ArtOfRallySplits
     [HarmonyPatch(typeof(StageTimerManager), "Update")]
     public static class StageTimeDisplay
     {
+        // ReSharper disable once InconsistentNaming
         public static void Postfix(Text ___TimeDisplay)
         {
             SplitsUI.DeltaStyle.font = ___TimeDisplay.font;

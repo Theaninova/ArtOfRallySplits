@@ -12,9 +12,9 @@ namespace ArtOfRallySplits
     [HarmonyPatch(typeof(GhostManager), nameof(GhostManager.InitializeGhost))]
     public class GhostLoader
     {
-        public static int Counter = 0;
+        private static int Counter;
 
-        public static bool Initialized;
+        private static bool Initialized;
 
         public static void Prefix(bool ____createdGhost)
         {

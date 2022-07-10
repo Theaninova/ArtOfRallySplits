@@ -13,12 +13,12 @@ namespace ArtOfRallySplits
 {
     public static class SplitsConfigLoader
     {
-        private const string PaceNoteConfigPath = "SplitConfigs";
+        private const string SplitsConfigPath = "SplitConfigs";
 
         [CanBeNull]
         public static int[] LoadSplitsConfig(string stage)
         {
-            var path = Path.Combine(Main.ModEntry.Path, PaceNoteConfigPath, Main.Settings.ConfigSet, $"{stage}.csv");
+            var path = Path.Combine(Main.ModEntry.Path, SplitsConfigPath, Main.Settings.ConfigSet, $"{stage}.csv");
 
             if (!File.Exists(path))
             {
@@ -48,6 +48,7 @@ namespace ArtOfRallySplits
             
             var stage = GameModeManager.RallyManager.RallyData.GetCurrentStage();
             SplitsState.Stage = $"{AreaManager.GetAreaStringNotLocalized(stage.Area)}_{stage.Name}";
+            if (!stage.IsForwardStage) SplitsState.Stage += "_r";
 
             Main.Logger.Log($"Stage key: {SplitsState.Stage}, WaypointCount: {____cachedWaypoints.Length}");
 

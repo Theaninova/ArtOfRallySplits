@@ -3,7 +3,7 @@ using UnityModManagerNet;
 
 namespace ArtOfRallySplits
 {
-    public class DebugUI
+    public static class DebugUI
     {
         public static void Draw(UnityModManager.ModEntry modEntry, float fade)
         {
