@@ -13,7 +13,7 @@ namespace ArtOfRallySplits
 {
     public static class SplitsConfigLoader
     {
-        private const string SplitsConfigPath = "SplitConfigs";
+        private const string SplitsConfigPath = "split_configs";
 
         [CanBeNull]
         public static int[] LoadSplitsConfig(string stage)
@@ -38,16 +38,17 @@ namespace ArtOfRallySplits
             return null;
         }
     }
-    
+
     [HarmonyPatch(typeof(OutOfBoundsManager), nameof(OutOfBoundsManager.Start))]
     public class SplitsLoader
     {
         public static void Postfix(Vector3[] ____cachedWaypoints)
         {
             SplitsState.Waypoints = ____cachedWaypoints;
-            
+
             var stage = GameModeManager.RallyManager.RallyData.GetCurrentStage();
-            SplitsState.Stage = $"{AreaManager.GetAreaStringNotLocalized(stage.Area)}_{stage.Name}";
+            SplitsState.Stage = Path.Combine(AreaManager.GetAreaStringNotLocalized(stage.Area),
+                stage.Name.Replace(' ', '_'));
             if (!stage.IsForwardStage) SplitsState.Stage += "_r";
 
             Main.Logger.Log($"Stage key: {SplitsState.Stage}, WaypointCount: {____cachedWaypoints.Length}");
