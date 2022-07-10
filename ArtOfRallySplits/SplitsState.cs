@@ -5,6 +5,8 @@ namespace ArtOfRallySplits
 {
     public static class SplitsState
     {
+        public static string Stage;
+
         public static int CurrentWaypointIndex = 0;
         
         public static float GhostTime = 0;

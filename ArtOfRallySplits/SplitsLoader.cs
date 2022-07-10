@@ -16,7 +16,7 @@ namespace ArtOfRallySplits
         private const string PaceNoteConfigPath = "SplitConfigs";
 
         [CanBeNull]
-        public static int[] LoadPaceNoteConfig(string stage)
+        public static int[] LoadSplitsConfig(string stage)
         {
             var path = Path.Combine(Main.ModEntry.Path, PaceNoteConfigPath, Main.Settings.ConfigSet, $"{stage}.csv");
 
@@ -47,15 +47,15 @@ namespace ArtOfRallySplits
             SplitsState.Waypoints = ____cachedWaypoints;
             
             var stage = GameModeManager.RallyManager.RallyData.GetCurrentStage();
-            var stageKey = $"{AreaManager.GetAreaStringNotLocalized(stage.Area)}_{stage.Name}";
+            SplitsState.Stage = $"{AreaManager.GetAreaStringNotLocalized(stage.Area)}_{stage.Name}";
 
-            Main.Logger.Log($"Stage key: {stageKey}, WaypointCount: {____cachedWaypoints.Length}");
+            Main.Logger.Log($"Stage key: {SplitsState.Stage}, WaypointCount: {____cachedWaypoints.Length}");
 
             SplitsState.SplitsConfig =
-                SplitsConfigLoader.LoadPaceNoteConfig(stageKey);
+                SplitsConfigLoader.LoadSplitsConfig(SplitsState.Stage);
             if (SplitsState.SplitsConfig == null)
             {
-                Main.Logger.Warning($"Missing pace note config for stage {stageKey}");
+                Main.Logger.Warning($"Missing pace note config for stage {SplitsState.Stage}");
             }
             else
             {

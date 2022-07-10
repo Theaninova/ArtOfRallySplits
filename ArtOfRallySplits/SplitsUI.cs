@@ -37,24 +37,16 @@ namespace ArtOfRallySplits
 
         public static void Draw(UnityModManager.ModEntry modEntry)
         {
-            if (GameEntryPoint.EventManager.status == EventStatusEnums.EventStatus.IN_PRE_STAGE_SCREEN) return;
-
             var time = Time.time - _lastTimestamp;
             var fade = Mathf.Clamp(time > Main.Settings.FadeTime
                     ? 1f - (time + Main.Settings.FadeTime - Main.Settings.DisplayTime) / Main.Settings.FadeTime
                     : time / Main.Settings.FadeTime, 0, 1
             );
+            
+            DebugUI.Draw(modEntry, fade);
 
-            if (Main.Settings.ShowCurrentWaypoint)
-            {
-                GUI.Label(
-                    new Rect(0, 0, 200, 200),
-                    $"Waypoint {SplitsState.CurrentWaypointIndex}\n"
-                    + $"Player Split {SplitsState.PlayerTime:F}s\n"
-                    + $"Ghost Split {SplitsState.GhostTime:F}s\n"
-                    + $"Fade: {fade}"
-                );
-            }
+            if (GameEntryPoint.EventManager.status == EventStatusEnums.EventStatus.IN_PRE_STAGE_SCREEN) return;
+
 
             var difference = SplitsState.PlayerTime - SplitsState.GhostTime;
             var sign = Math.Sign(difference) != -1 ? "+" : "-";
