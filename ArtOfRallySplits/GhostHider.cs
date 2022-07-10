@@ -30,7 +30,8 @@ namespace ArtOfRallySplits
 
         public static bool Prefix()
         {
-            return !Main.Settings.HideGhost;
+            // return !Main.Settings.HideGhost;
+            return true;
         }
     }
 

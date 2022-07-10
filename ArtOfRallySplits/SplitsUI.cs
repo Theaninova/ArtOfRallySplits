@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 using UnityModManagerNet;
 using Color = UnityEngine.Color;
 
@@ -39,8 +37,7 @@ namespace ArtOfRallySplits
 
         public static void Draw(UnityModManager.ModEntry modEntry)
         {
-            if (GameEntryPoint.EventManager.status != EventStatusEnums.EventStatus.UNDERWAY &&
-                GameEntryPoint.EventManager.status != EventStatusEnums.EventStatus.WAITING_TO_BEGIN) return;
+            if (GameEntryPoint.EventManager.status == EventStatusEnums.EventStatus.IN_PRE_STAGE_SCREEN) return;
 
             var time = Time.time - _lastTimestamp;
             var fade = Mathf.Clamp(time > Main.Settings.FadeTime
