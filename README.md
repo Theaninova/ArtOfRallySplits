@@ -4,7 +4,7 @@
 ![](https://img.shields.io/badge/Game%20Version-v1.3.3a-blue)
 [![Art Or Rally Discord](https://badgen.net/discord/members/Sx3e7qGTh9)](https://discord.gg/Sx3e7qGTh9)
 
-A mod for Art Of Rally that adds automatic & configurable pace notes.
+A mod for Art of Rally that displays customizable splits.
 
 #### Launcher Support
 ![](https://img.shields.io/badge/GOG-Supprted-green)
