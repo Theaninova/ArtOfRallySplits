@@ -42,13 +42,16 @@ namespace ArtOfRallySplits
                     ? 1f - (time + Main.Settings.FadeTime - Main.Settings.DisplayTime) / Main.Settings.FadeTime
                     : time / Main.Settings.FadeTime, 0, 1
             );
-            
+
             DebugUI.Draw(modEntry, fade);
 
             if (GameEntryPoint.EventManager.status == EventStatusEnums.EventStatus.IN_PRE_STAGE_SCREEN) return;
 
+            var relativePlayerTimes = MakeRelativeTimes(SplitsState.PlayerTimes, SplitsState.FinalPlayerTime);
+            var relativeGhostTimes = MakeRelativeTimes(SplitsState.GhostTimes, SplitsState.FinalGhostTime);
 
-            var difference = SplitsState.PlayerTime - SplitsState.GhostTime;
+            var difference = relativePlayerTimes[SplitsState.TimeSplitIndex] -
+                             relativeGhostTimes[SplitsState.TimeSplitIndex];
             var sign = Math.Sign(difference) != -1 ? "+" : "-";
             var color = Math.Sign(difference) != -1 ? Main.Settings.BehindColor : Main.Settings.AheadColor;
 
@@ -80,6 +83,7 @@ namespace ArtOfRallySplits
                 TimeStyle.normal.textColor = Color.white;
                 TimeStyle.fontSize = Main.Settings.TimeFontSize;
                 TimeStyle.fontStyle = Main.Settings.TimeFontStyle;
+
                 GUI.Box(
                     Anchor(Main.Settings.TimeAnchor, new Rect(
                         Main.Settings.TimePosition.x,
@@ -87,10 +91,7 @@ namespace ArtOfRallySplits
                         Main.Settings.TimeSize.x,
                         Main.Settings.TimeSize.y
                     )),
-                    string.Join("\n",
-                        SplitsState.PlayerTimes.Select(it =>
-                            it < 0 ? "--:--:---" : TimeFormatter.GetCachedFormattedTime(it))
-                    ),
+                    string.Join("\n", relativePlayerTimes.Select(MakeTimeLabel)),
                     TimeStyle
                 );
             }
@@ -114,6 +115,25 @@ namespace ArtOfRallySplits
                 ),
                 _ => throw new ArgumentOutOfRangeException(nameof(anchor), anchor, "Unsupported anchor")
             };
+        }
+
+        private static string MakeTimeLabel(float time)
+        {
+            return time < 0
+                ? "--:--:---"
+                : TimeFormatter.GetCachedFormattedTime(time);
+        }
+
+        private static float[] MakeRelativeTimes(float[] times, float last)
+        {
+            var result = new float[times.Length + 1];
+            for (var i = 0; i < times.Length; i++)
+            {
+                result[i] = times[i] - Mathf.Abs(i == 0 ? 0 : times[i - 1]);
+            }
+
+            result[result.Length - 1] = last - Mathf.Abs(times.Length == 0 ? 0 : times[times.Length - 1]);
+            return result;
         }
     }
 

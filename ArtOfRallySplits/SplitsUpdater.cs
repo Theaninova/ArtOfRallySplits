@@ -23,8 +23,9 @@ namespace ArtOfRallySplits
             var index = SplitsState.SplitsConfig.IndexOf(SplitsState.CurrentWaypointIndex);
             if (___CurrentWaypointIndex < SplitsState.SplitsConfig.First())
             {
-                SplitsState.PlayerTime = -1;
-                SplitsState.GhostTime = -1;
+                SplitsState.FinalPlayerTime = -1;
+                SplitsState.FinalGhostTime = -1;
+                SplitsState.TimeSplitIndex = 0;
                 SplitsState.PlayerTimes = new float[SplitsState.SplitsConfig.Length];
                 for (var i = 0; i < SplitsState.PlayerTimes.Length; i++)
                 {
@@ -35,13 +36,20 @@ namespace ArtOfRallySplits
             if (index != -1 && SplitsState.PlayerTimes != null && LastWaypoint < SplitsState.CurrentWaypointIndex)
             {
                 SplitsState.PlayerTimes[index] = GameEntryPoint.EventManager.stageTimerManager.GetStageTimeMS();
-
-                SplitsState.PlayerTime = SplitsState.PlayerTimes[index];
-                SplitsState.GhostTime = SplitsState.GhostTimes[index];
+                SplitsState.TimeSplitIndex = index;
                 SplitsUI.ResetFade();
             }
 
             LastWaypoint = SplitsState.CurrentWaypointIndex;
+        }
+    }
+
+    [HarmonyPatch(typeof(StageTimerManager), nameof(StageTimerManager.OnStageOver))]
+    public static class FinalTimeUpdater
+    {
+        public static void Postfix(StageTimerManager __instance)
+        {
+            SplitsState.FinalPlayerTime = __instance.GetStageTimeMS();
         }
     }
 }

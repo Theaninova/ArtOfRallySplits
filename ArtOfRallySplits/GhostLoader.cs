@@ -38,6 +38,8 @@ namespace ArtOfRallySplits
                 SplitsState.GhostTimes[i] = ____currentData._timeData[index];
             }
 
+            SplitsState.FinalGhostTime = ____currentData._finishTime;
+
             Main.Logger.Log($"Ghost Times: [{string.Join(", ", SplitsState.GhostTimes)}]");
         }
 

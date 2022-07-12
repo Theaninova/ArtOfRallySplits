@@ -47,9 +47,9 @@ namespace ArtOfRallySplits
             SplitsState.Waypoints = ____cachedWaypoints;
 
             var stage = GameModeManager.RallyManager.RallyData.GetCurrentStage();
-            SplitsState.Stage = Path.Combine(AreaManager.GetAreaStringNotLocalized(stage.Area),
-                stage.Name.Replace(' ', '_'));
-            if (!stage.IsForwardStage) SplitsState.Stage += "_r";
+            SplitsState.Stage = Path.Combine(AreaManager.GetAreaStringNotLocalized(stage.Area), stage.Name
+                .Replace(" - ", "_")
+                .Replace(' ', '_'));
 
             Main.Logger.Log($"Stage key: {SplitsState.Stage}, WaypointCount: {____cachedWaypoints.Length}");
 

@@ -9,9 +9,11 @@ namespace ArtOfRallySplits
 
         public static int CurrentWaypointIndex = 0;
         
-        public static float GhostTime = 0;
-        
-        public static float PlayerTime = 0;
+        public static int TimeSplitIndex = 0;
+
+        public static float FinalGhostTime = -1;
+
+        public static float FinalPlayerTime = 0;
 
         [CanBeNull] public static int[] SplitsConfig;
 
