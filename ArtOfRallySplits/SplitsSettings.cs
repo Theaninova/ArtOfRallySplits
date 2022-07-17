@@ -20,11 +20,15 @@ namespace ArtOfRallySplits
 
         [Draw] public float FadeTime = 0.1f;
 
-        [Draw] public Color AheadColor = new Color(0.55f, 1f, 0.325f);
+        [Draw] public Color AheadColor = new Color(0.3250f, 0.325f, 1.0f, 0.7f);
 
-        [Draw] public Color BehindColor = new Color(1f, 0.325f, 0.25f);
+        [Draw] public Color BehindColor = new Color(1f, 0.325f, 0.325f, 0.7f);
 
         [Draw] public Color BackgroundColor = new Color(0.4f, 0.4f, 0.4f, 0.7f);
+
+        [Draw] public Color DeltaTextColor = Color.white;
+
+        [Draw] public Color SplitsTextColor = Color.white;
 
         [Header("Split Time")] [Draw] public bool ShowSplitTime = true;
 

@@ -57,10 +57,10 @@ namespace ArtOfRallySplits
 
             if (Main.Settings.ShowDelta)
             {
-                GUI.color = new Color(1f, 1f, 1f, Main.Settings.AlwaysShowDelta ? 1f : fade);
-                GUI.backgroundColor = Main.Settings.BackgroundColor;
+                GUI.color = new Color(1, 1, 1, Main.Settings.AlwaysShowDelta ? 1 : fade);
+                GUI.backgroundColor = color;
 
-                DeltaStyle.normal.textColor = color;
+                DeltaStyle.normal.textColor = Main.Settings.DeltaTextColor;
                 DeltaStyle.fontSize = Main.Settings.DeltaFontSize;
                 DeltaStyle.fontStyle = Main.Settings.DeltaFontStyle;
                 GUI.Box(
@@ -80,7 +80,7 @@ namespace ArtOfRallySplits
                 GUI.color = new Color(1f, 1f, 1f, Main.Settings.AlwaysShowTime ? 1f : fade);
                 GUI.backgroundColor = Main.Settings.BackgroundColor;
 
-                TimeStyle.normal.textColor = Color.white;
+                TimeStyle.normal.textColor = Main.Settings.SplitsTextColor;
                 TimeStyle.fontSize = Main.Settings.TimeFontSize;
                 TimeStyle.fontStyle = Main.Settings.TimeFontStyle;
 
