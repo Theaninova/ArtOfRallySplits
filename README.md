@@ -1,7 +1,7 @@
 # Art Of Rally Splits
 
 [![](https://img.shields.io/github/v/release/Theaninova/ArtOfRallySplits?label=Download)](https://github.com/Theaninova/ArtOfRallySplits/releases/latest)
-![](https://img.shields.io/badge/Game%20Version-v1.3.3a-blue)
+![](https://img.shields.io/badge/Game%20Version-v1.4.0-blue)
 [![Art Or Rally Discord](https://badgen.net/discord/members/Sx3e7qGTh9)](https://discord.gg/Sx3e7qGTh9)
 
 A mod for Art of Rally that displays customizable splits.
@@ -27,7 +27,17 @@ please either message me or submit a merge request to the `presets/` folder.***
 Press `CTRL + F10` to bring up the mod menu. Click on the Splits mod,
 and enable or disable the desired features.
 
-### Features
+## Features
+
+### Splits Config Myth
+
+* [ ] Norway
+* [x] Finland
+* [ ] Sardinia
+* [ ] Japan
+* [ ] Germany
+* [ ] Kenya
+* [ ] Indonesia
 
 ### Folder Structure
 
@@ -35,10 +45,11 @@ and enable or disable the desired features.
 mod root/
 ├─ split_configs/
 │  ├─ myth/
-│  │  ├─ finland_noormarkku.csv
+│  │  ├─ finland
+|  |  |  ├─ finland_noormarkku.csv
+|  |  |  └─ ...
 │  │  └─ ...
 │  └─ [your_name]/
-│     ├─ finland_noormarkku.csv
 │     └─ ...
 ├─ ArtOfRallySplits.dll
 └─ info.json
